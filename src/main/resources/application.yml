@@ -1,0 +1,19 @@
+server:
+    port: 8080
+spring:
+    redis:
+      database: 0
+      host: 192.168.137.135
+      port: 6379
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+      timeout: 0
+    rabbitmq:
+      host: 192.168.137.135
+      port: 5673
+
+
+
+
