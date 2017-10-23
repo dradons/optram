@@ -11,6 +11,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.*;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.xml.XmlFrameDecoder;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
 import java.nio.ByteOrder;
 
@@ -44,6 +47,7 @@ public class HeartServer {
     private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast("logging",new LoggingHandler(LogLevel.INFO));
             ch.pipeline().addLast("decoder", new LengthFieldBasedFrameDecoder(ByteOrder.LITTLE_ENDIAN,Integer.MAX_VALUE, 0, 4, 0, 4,true));
             ch.pipeline().addLast(new StringDecoder());
             ch.pipeline().addLast("encoder", new LengthFieldPrepender(ByteOrder.LITTLE_ENDIAN,4,0,false));

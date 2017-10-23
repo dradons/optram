@@ -1,5 +1,8 @@
 package com.jetsen.pack.optram.netty;
 
+import com.jetsen.pack.optram.bean.SystemStatusReportRequest;
+import com.jetsen.pack.optram.business.HeartBusiness;
+import com.jetsen.pack.optram.util.XMLUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,9 +20,8 @@ public class HeartSeverHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
         String body = (String) msg;
-        logger.debug(body);
-        logger.debug(body.length());
-        ByteBuf message =  Unpooled.copiedBuffer(body.getBytes());
+        String resp = HeartBusiness.doBusiness(body);
+        ByteBuf message =  Unpooled.copiedBuffer(resp.getBytes());
         ctx.writeAndFlush(message);
     }
 
