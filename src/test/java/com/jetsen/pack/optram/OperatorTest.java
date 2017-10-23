@@ -24,16 +24,16 @@ public class OperatorTest implements Runnable{
 			outputStream = client.getOutputStream();
 			// 接收数据后业务处理
 			StringBuilder sb = new StringBuilder();
-			for(int i=0;i<1000;i++){
-				sb.append("helloeveryone"+i);
-			}
+			/*for(int i=0;i<2;i++){
+				sb.append("<>helloeveryone"+i);
+			}*/
 //			String resultString = "QUERY TIME ORDER";//
-//			String resultString = "";
-//			resultString+="<root>";
-//			resultString+="<ChannelCode>0081</ChannelCode><PlayDate>2017-07-21</PlayDate><PlayListType>1</PlayListType>";
-//			resultString+="</root>";
+			String resultString = "";
+			resultString+="<root>";
+			resultString+="<ChannelCode>0081</ChannelCode><PlayDate>2017-07-21</PlayDate><PlayListType>1</PlayListType>";
+			resultString+="</root>";
 			String code = "gbk";
-			String resultString = sb.toString();
+//			String resultString = sb.toString();
 			logger.info(Thread.currentThread().getId()+"-请求体-"+resultString);
 			logger.info(Thread.currentThread().getId()+"-请求长度-"+resultString.getBytes(code).length);
 //			byte[] head1 = ByteOper.intToByte4(resultString.getBytes(code).length);
