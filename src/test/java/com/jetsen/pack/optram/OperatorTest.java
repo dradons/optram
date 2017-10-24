@@ -1,5 +1,12 @@
 package com.jetsen.pack.optram;
 
+import com.jetsen.pack.optram.netty.ByteOper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,12 +15,8 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-
-import com.jetsen.pack.optram.netty.ByteOper;
-import org.apache.log4j.Logger;
-
 public class OperatorTest implements Runnable{
-	private static Logger logger = Logger.getLogger(OperatorTest.class);
+	private static Logger logger = LogManager.getLogger(OperatorTest.class);
 	private Socket client;
 	public void run() {
 		InputStream inputStream = null;
@@ -30,7 +33,7 @@ public class OperatorTest implements Runnable{
 //			String resultString = "QUERY TIME ORDER";//
 			String resultString = "";
 			resultString+="<root>";
-			resultString+="<ChannelCode>0081</ChannelCode><PlayDate>2017-07-21</PlayDate><PlayListType>1</PlayListType>";
+			resultString+="<ChannelCode>0080</ChannelCode><PlayDate>20171018</PlayDate><PlayListType>1</PlayListType>";
 			resultString+="</root>";
 			String code = "gbk";
 //			String resultString = sb.toString();
@@ -80,13 +83,33 @@ public class OperatorTest implements Runnable{
 	}
 
 	public static void main(String arg[]) throws UnknownHostException, IOException, InterruptedException{
-		int count =1;
-		for(int i=0;i<1;i++){
-			OperatorTest op = new OperatorTest();
-			Thread t = new Thread(op);
-			t.start();
-		}
 
 	}
+
+	static void testPostJson(){
+        RestTemplate restTemplate = new RestTemplate();
+        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/getForValues","[{'key':'java'},{'key':'java-io'}]",String.class));
+    }
+
+    static void testPostVal(){
+        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
+        params.set("key","hi");
+        params.set("value","hi");
+        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/setForValue",params,String.class));
+    }
+
+    void testHttpgetVal(){
+        RestTemplate restTemplate = new RestTemplate();
+        logger.info(restTemplate.getForEntity("http://localhost:8080/redis/getForValue?key={key}",String.class,"hello"));
+    }
+
+    static void testSocketHeartServer(){
+        for(int i=0;i<1;i++){
+            OperatorTest op = new OperatorTest();
+            Thread t = new Thread(op);
+            t.start();
+        }
+    }
 
 }
