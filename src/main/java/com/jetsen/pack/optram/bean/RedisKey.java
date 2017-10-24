@@ -8,6 +8,14 @@ public class RedisKey {
     private String key;
     private String value;
 
+    public RedisKey(String key, String value){
+        this.key=key;
+        this.value=value;
+    }
+
+    public RedisKey(){
+    }
+
     public String getKey() {
         return key;
     }
