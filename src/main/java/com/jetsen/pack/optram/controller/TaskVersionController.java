@@ -55,13 +55,8 @@ public class TaskVersionController {
 
     @RequestMapping(value = "/redis/getForValues",method = RequestMethod.POST)
     @ResponseBody
-    List<RedisKey> getForValues(@RequestBody String keys){
-//        MultiKey multiKey = new MultiKey();
+    List<RedisKey> getForValues(@RequestBody List<RedisKey> redisObjList){
         List<RedisKey> redisKeys = new ArrayList<RedisKey>();
-        //解析json
-        Gson gson = new Gson();
-        Type listType = new TypeToken<ArrayList<RedisKey>>(){}.getType();
-        List<RedisKey> redisObjList = gson.fromJson(keys,listType);
         // 构造redis key 请求list
         List<String> keyList = new ArrayList<String>();
         for(RedisKey rediskey : redisObjList){
