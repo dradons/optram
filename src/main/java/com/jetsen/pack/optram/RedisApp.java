@@ -1,5 +1,6 @@
 package com.jetsen.pack.optram;
 
+import com.jetsen.pack.optram.netty.HeartServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RedisApp {
 
 	public static void main(String[] args) {
-	    SpringApplication.run(RedisApp.class,args);
+
+		SpringApplication.run(RedisApp.class,args);
+		try {
+			new HeartServer().bind(20001);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 /*	public static void main(String[] args) {
