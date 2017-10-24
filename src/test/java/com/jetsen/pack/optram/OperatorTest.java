@@ -1,19 +1,30 @@
 package com.jetsen.pack.optram;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.jetsen.pack.optram.bean.RedisKey;
 import com.jetsen.pack.optram.netty.ByteOper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OperatorTest implements Runnable{
 	private static Logger logger = LogManager.getLogger(OperatorTest.class);
@@ -33,7 +44,7 @@ public class OperatorTest implements Runnable{
 //			String resultString = "QUERY TIME ORDER";//
 			String resultString = "";
 			resultString+="<root>";
-			resultString+="<ChannelCode>0080</ChannelCode><PlayDate>20171018</PlayDate><PlayListType>1</PlayListType>";
+			resultString+="<ChannelCode>0080</ChannelCode><PlayDate>2017-10-18</PlayDate><PlayListType>1</PlayListType>";
 			resultString+="</root>";
 			String code = "gbk";
 //			String resultString = sb.toString();
@@ -83,20 +94,39 @@ public class OperatorTest implements Runnable{
 	}
 
 	public static void main(String arg[]) throws UnknownHostException, IOException, InterruptedException{
-
+        testSocketHeartServer();
+//        json2Obj();
 	}
 
 	static void testPostJson(){
+        String json = "[{\"key\":\"first\"},{\"key\":\"second\",\"value\":\"cc\"}]";
         RestTemplate restTemplate = new RestTemplate();
-        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/getForValues","[{'key':'java'},{'key':'java-io'}]",String.class));
+        HttpHeaders headers = new HttpHeaders();
+        MediaType type = MediaType.parseMediaType("application/json;charset=UTF-8");
+        headers.setContentType(type);
+        headers.add("Accept", MediaType.APPLICATION_JSON.toString());
+        HttpEntity<String> formEntity = new HttpEntity<String>(json, headers);
+        ResponseEntity<String> s = restTemplate.postForEntity("http://localhost:8080/redis/getForValues",formEntity,String.class);
+        s.getBody();
+        logger.info(s.getBody());
     }
 
     static void testPostVal(){
         RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, String> params = new LinkedMultiValueMap<String, String>();
-        params.set("key","hi");
-        params.set("value","hi");
+        params.set("key","0080:2017-10-18:normal");
+        params.set("value","1");
         logger.info(restTemplate.postForEntity("http://localhost:8080/redis/setForValue",params,String.class));
+        params.set("key","0080:2017-10-18:special");
+        params.set("value","1");
+        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/setForValue",params,String.class));
+        params.set("key","0080:2017-10-19:normal");
+        params.set("value","1");
+        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/setForValue",params,String.class));
+        params.set("key","0080:2017-10-19:special");
+        params.set("value","1");
+        logger.info(restTemplate.postForEntity("http://localhost:8080/redis/setForValue",params,String.class));
+
     }
 
     void testHttpgetVal(){
@@ -111,5 +141,15 @@ public class OperatorTest implements Runnable{
             t.start();
         }
     }
+
+    static void json2Obj(){
+		Gson gson = new Gson();
+		Type listType = new TypeToken<ArrayList<RedisKey>>(){}.getType();
+		List<RedisKey> redisObjList = gson.fromJson("[{'key':'first','value':null},{'key':'second','value':'cc'}]",listType);
+		logger.debug(StringUtils.isEmpty(redisObjList.get(0).getValue()));
+        logger.debug(redisObjList.get(1).getKey());
+        logger.debug(gson.toJson(redisObjList,listType));
+	}
+
 
 }
