@@ -1,9 +1,10 @@
-package com.jetsen.pack.optram.bean;
+package com.jetsen.pack.optram.mq.listener;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 /**
+ *
  * Created by lenovo on 2017/10/18.
  */
 @Component
