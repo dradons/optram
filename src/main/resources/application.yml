@@ -17,10 +17,11 @@ spring:
       url: jdbc:oracle:thin:@localhost:1521:orcl
       username: pkadmin
       password: password
+      driver-class-name: oracle.jdbc.driver.OracleDriver
       hikari:
         connection-timeout: 60000
         maximum-pool-size: 5
-      driver-class-name: oracle.jdbc.driver.OracleDriver
+
 
 
 
